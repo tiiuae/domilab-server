@@ -1,2 +1,2 @@
 # domilab-server
- DomiLab backend.
+ A playground for DomiRank centrality.
