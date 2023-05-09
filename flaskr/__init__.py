@@ -3,6 +3,8 @@ import json
 from flask import Flask
 from flask_cors import CORS
 from flask import request
+from flask import render_template
+from flask import send_from_directory
 
 def create_app(test_config=None):
     # create and configure the app
@@ -24,11 +26,12 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+    
 
-    # endpoint
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(os.path.join(app.root_path, 'static'),
+                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
     # endpoint
     @app.get('/graphs/<name>')
@@ -51,5 +54,15 @@ def create_app(test_config=None):
         graph = request.args.get('graph')
         alpha = request.args.get('alpha')
         return [name, graph, alpha]
+
+    # page
+    @app.route('/interactive-alpha')
+    def page_alpha():
+        return render_template('alpha.html')
+    
+    # page
+    @app.route('/network-attack')
+    def page_attack():
+        return render_template('attack.html')
 
     return app
