@@ -1,9 +1,13 @@
 import os
+import json
 from flask import Flask
+from flask_cors import CORS
+from flask import request
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    CORS(app)
     app.config.from_mapping(
         SECRET_KEY='dev',
     )
@@ -21,9 +25,31 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
+    # endpoint
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
+
+    # endpoint
+    @app.get('/graphs/<name>')
+    def get_graph(name):
+        assert name in ["dolphins", "zachary"]
+        with open(os.path.join('/home/sultan/Databases/domilab', '{}.json'.format(name)), 'r') as f:
+            graph = json.load(f)
+        return graph
+
+    # endpoint
+    @app.get('/centralities')
+    def get_centralities():
+        return {
+            'data': ['domirank']
+        }
+
+    # endpoint
+    @app.get('/centralities/<name>')
+    def get_centrality(name):
+        graph = request.args.get('graph')
+        alpha = request.args.get('alpha')
+        return [name, graph, alpha]
 
     return app
