@@ -1,49 +1,61 @@
 
-chart = ForceGraph({
-    nodes: [{
-        id: "Structural basis of PROTAC cooperative recognition for selective protein degradation.",
-        group: "Cited Works",
-        radius: 2,
-        citing_patents_count: 2
-      },{
-        id: "The influence of rough lipopolysaccharide structur…nteractions with mammalian antimicrobial peptides",
-        group: "Cited Works",
-        radius: 1,
-        citing_patents_count: 1
-      },{
-        id: "New Synthetic Routes to Triazolo-benzodiazepine An… and Extra-Terminal (BET) Bromodomain Inhibition.",
-        group: "Cited Works",
-        radius: 1,
-        citing_patents_count: 1
-      },{
-        id: "Cyclic and Macrocyclic Peptides as Chemical Tools … Surfaces and Probe Protein-Protein Interactions.",
-        group: "Cited Works",
-        radius: 1,
-        citing_patents_count: 1
-      }],
-    links: [{
-        source: "Structural basis of PROTAC cooperative recognition for selective protein degradation.",
-        target: "The influence of rough lipopolysaccharide structur…nteractions with mammalian antimicrobial peptides",
-        value: 2
-      },{
-        source: "New Synthetic Routes to Triazolo-benzodiazepine An… and Extra-Terminal (BET) Bromodomain Inhibition.",
-        target: "The influence of rough lipopolysaccharide structur…nteractions with mammalian antimicrobial peptides",
-        value: 2
-      },{
-        source: "New Synthetic Routes to Triazolo-benzodiazepine An… and Extra-Terminal (BET) Bromodomain Inhibition.",
-        target: "Cyclic and Macrocyclic Peptides as Chemical Tools … Surfaces and Probe Protein-Protein Interactions.",
-        value: 2
-      }]
-}, {
-    nodeId: (d) => d.id,
-    nodeGroup: (d) => d.group,
-    linkStrokeWidth: (l) => Math.sqrt(l.value),  
-    width: 400,
-    height: 600,
-    // invalidation, // a promise to stop the simulation when the cell is re-run
+// Draw the graph network
+function drawGraph(centrality, graph, alpha) {
+  getCentrality(centrality, {
+      'graph': graph,
+      'alpha': alpha
   })
+  .done(function (data) {
+  
+    nodes = data['nodes'].map((e) => {
+      return {
+        id: e.id,
+        radius: 1,
+        value: e.value
+      }
+    });
+  
+    links = data['links'].map((e) => {
+      return {
+        source: e.source,
+        target: e.target,
+        value: 1
+      }
+    })
+  
+    chart = ForceGraph({
+      nodes: nodes,
+      links: links
+    }, {
+      nodeId: (d) => d.id,
+      // nodeGroup: (d) => d.group,
+      nodeFill: (d) => `rgb(0, 193, 140, ${d.value})`,
+      linkStrokeWidth: (l) => Math.sqrt(l.value),
+      width: $('div#graphContainer').width(),
+      height: $('div#graphContainer').height(),
+      // invalidation, // a promise to stop the simulation when the cell is re-run
+    })
+  
+    $('#graphContainer').html(chart)
+  })
+}
 
-  // console.log(d3.select('#scatter_area'));
-  // console.log(document.getElementById('scatter_area'));
-  document.getElementById('scatter_area').appendChild(chart)
-  // d3.select('#scatter_area').insert(chart)
+drawGraph(selectCentrality_default, selectGraph_default, selectAlpha_default)
+function updateGraph() {
+    form = getFormValues()
+    drawGraph(form['centrality'], form['graph'], form['alpha'])
+}
+
+
+selectGraph.on('change', function(e) {
+  if (e.target.value.length)
+    updateGraph()
+})
+selectCentrality.on('change', function(e) {
+  if (e.target.value.length)
+    updateGraph()
+})
+selectAlpha.on('change', function(e) {
+  if (e.target.value.length)
+    updateGraph()
+})
