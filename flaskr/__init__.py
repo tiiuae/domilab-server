@@ -1,10 +1,15 @@
 import os
 import json
+import numpy as np
 from flask import Flask
 from flask_cors import CORS
 from flask import request
 from flask import render_template
 from flask import send_from_directory
+
+# GRAPHS = ["dolphins", "zachary", "patents", "people"]
+GRAPHS = ["dolphins", "zachary"]
+CENTRALITIES = ["domirank"]
 
 def create_app(test_config=None):
     # create and configure the app
@@ -34,10 +39,22 @@ def create_app(test_config=None):
                                 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
     # endpoint
+    @app.get('/graphs')
+    def get_graphs():
+        return {
+            'data': [
+                {'id': "dolphins", 'value': "dolphins"}, 
+                {'id': "zachary", 'value': "zachary"}, 
+                # {'id': "patents", 'value': "patents"}, 
+                # {'id': "people", 'value': "people"}
+            ]
+        }
+
+    # endpoint
     @app.get('/graphs/<name>')
     def get_graph(name):
-        assert name in ["dolphins", "zachary"]
-        with open(os.path.join('/home/sultan/Databases/domilab', '{}.json'.format(name)), 'r') as f:
+        assert name in GRAPHS
+        with open(os.path.join('flaskr', 'data', '{}.json'.format(name)), 'r') as f:
             graph = json.load(f)
         return graph
 
@@ -45,7 +62,9 @@ def create_app(test_config=None):
     @app.get('/centralities')
     def get_centralities():
         return {
-            'data': ['domirank']
+            'data': [
+                {'id': "domirank", 'value': "domirank"}
+            ]
         }
 
     # endpoint
@@ -53,7 +72,22 @@ def create_app(test_config=None):
     def get_centrality(name):
         graph = request.args.get('graph')
         alpha = request.args.get('alpha')
-        return [name, graph, alpha]
+        alpha = int(alpha)-1
+        assert name in CENTRALITIES
+        assert graph in GRAPHS
+
+        with open(os.path.join('flaskr', 'data', '{}.json'.format(graph)), 'r') as f:
+            graph_json = json.load(f)
+
+        if graph == "dolphins":
+            d = np.load(os.path.join('flaskr', 'data', 'dolphins_centrality_component.npy'), allow_pickle=True)
+        elif graph == "zachary":
+            d = np.load(os.path.join('flaskr', 'data', 'zachary_centrality_component.npy'), allow_pickle=True)
+        
+        for i in graph_json['nodes']:
+            i['value'] = d[alpha][0][int(i['id'])-1].tolist()
+        
+        return graph_json
 
     # page
     @app.route('/interactive-alpha')
@@ -63,6 +97,11 @@ def create_app(test_config=None):
     # page
     @app.route('/network-attack')
     def page_attack():
+        return render_template('attack.html')
+    
+    # page
+    @app.route('/arc-diagram')
+    def page_arc():
         return render_template('attack.html')
 
     return app
