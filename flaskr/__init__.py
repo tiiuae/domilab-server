@@ -2,7 +2,6 @@ import os
 import json
 import numpy as np
 from flask import Flask
-from flask_cors import CORS
 from flask import request
 from flask import render_template
 from flask import send_from_directory
@@ -14,7 +13,6 @@ CENTRALITIES = ["domirank"]
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    CORS(app)
     app.config.from_mapping(
         SECRET_KEY='dev',
     )
@@ -51,7 +49,7 @@ def create_app(test_config=None):
         }
 
     # endpoint
-    @app.get('/graphs/<name>')
+    @app.get('/graphs/<string:name>')
     def get_graph(name):
         assert name in GRAPHS
         with open(os.path.join('flaskr', 'data', '{}.json'.format(name)), 'r') as f:
@@ -68,7 +66,7 @@ def create_app(test_config=None):
         }
 
     # endpoint
-    @app.get('/centralities/<name>')
+    @app.get('/centralities/<string:name>')
     def get_centrality(name):
         graph = request.args.get('graph')
         alpha = request.args.get('alpha')
@@ -90,6 +88,7 @@ def create_app(test_config=None):
         return graph_json
 
     # page
+    @app.route('/')
     @app.route('/interactive-alpha')
     def page_alpha():
         return render_template('alpha.html')
