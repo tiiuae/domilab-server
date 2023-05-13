@@ -35,6 +35,6 @@ selectAlpha.on('change', function(e) {
         'alpha': form['alpha']
     })
     .done((data) => {
-        console.log(data);
+        // console.log(data);
     })
 })

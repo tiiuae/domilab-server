@@ -1,6 +1,7 @@
 // Copyright 2021 Observable, Inc.
 // Released under the ISC license.
 // https://observablehq.com/@d3/disjoint-force-directed-graph
+ForceGraph_nodes = null
 function ForceGraph({
   nodes, // an iterable of node objects (typically [{id}, …])
   links // an iterable of link objects (typically [{source, target}, …])
@@ -13,7 +14,7 @@ function ForceGraph({
   nodeStroke = "#fff", // node stroke color
   nodeStrokeWidth = 1.5, // node stroke width, in pixels
   nodeStrokeOpacity = 1, // node stroke opacity
-  nodeRadius = 5, // node radius, in pixels
+  nodeRadius = 7, // node radius, in pixels
   nodeStrength,
   linkSource = ({ source }) => source, // given d in links, returns a node identifier string
   linkTarget = ({ target }) => target, // given d in links, returns a node identifier string
@@ -87,6 +88,7 @@ function ForceGraph({
     .attr("r", nodeRadius)
     .attr("fill", nodeFill)
     .call(drag(simulation));
+  ForceGraph_nodes = node
 
   if (G) node.attr("fill", ({ index: i }) => color(G[i]));
   if (T) node.append("title").text(({ index: i }) => T[i]);

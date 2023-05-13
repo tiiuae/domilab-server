@@ -22,9 +22,9 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="/interactive-alpha" class="nav-link active" aria-current="page">
+                <a href="/interactive-sigma" class="nav-link active" aria-current="page">
                     <i class="bi bi-arrow-left-right me-2"></i>
-                    Interactive Alpha
+                    Interactive Sigma
                 </a>
             </li>
             <li>
@@ -75,7 +75,7 @@
                     </select>
                 </div>
                 <div class="col">
-                    <label for="inputAlpha" class="form-label mb-3">Change the value of Alpha</label>
+                    <label for="inputAlpha" class="form-label mb-3">Change the value of Sigma</label>
                     <div class="d-flex flex-row">
                         <input type="range" class="form-range" min="1" max="100" step="1" id="inputAlpha">
                         <strong class="text-muted ms-3" id="inputAlphaValue"></strong>
@@ -85,7 +85,24 @@
         </div>
 
         <!--  -->
-        <div class="h-100 w-100" id="graphContainer"></div>
+        <div class="container-fluid h-100 w-100">
+            <div class="row h-100">
+                <div class="col-6 p-2">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="h-100 w-100" id="chartContainer"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 p-2">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="h-100 w-100" id="graphContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 
@@ -98,6 +115,7 @@
 
     <!-- page specific scripts -->
     <script src="/static/disjoint-force-directed.js"></script>
+    <script src="/static/line-chart.js"></script>
     <script src="/static/alpha.js"></script>
 </body>
 </html>
