@@ -85,11 +85,12 @@ def create_app(test_config=None):
         for i in graph_json['nodes']:
             i['value'] = d[alpha][0][int(i['id'])-1].tolist()
         
+        graph_json['trend'] = [[i, e] for i, e in enumerate(d[alpha][1])]
         return graph_json
 
     # page
     @app.route('/')
-    @app.route('/interactive-alpha')
+    @app.route('/interactive-sigma')
     def page_alpha():
         return render_template('alpha.html')
     
