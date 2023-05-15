@@ -99,13 +99,29 @@ function updateGraph() {
 
 selectGraph.on('change', function(e) {
   if (e.target.value.length)
-    updateGraph()
+    // updateGraph()
+    form = getFormValues()
+    drawGraph(form['centrality'], form['graph'], form['alpha'])
 })
 selectCentrality.on('change', function(e) {
   if (e.target.value.length)
-    updateGraph()
+    // updateGraph()
+    form = getFormValues()
+    drawGraph(form['centrality'], form['graph'], form['alpha'])
 })
 selectAlpha.on('change', function(e) {
   if (e.target.value.length)
-    updateGraph()
+    // updateGraph()
+    form = getFormValues()
+    redrawGraph(form['centrality'], form['graph'], form['alpha'])
 })
+
+
+function removeNode() {
+  // ForceGraph_nodes = ForceGraph_nodes.filter((e) => {
+  //   console.log(e);
+  //   if (e.index == 50) 
+  //     return false
+  //   else return true
+  // })
+}
